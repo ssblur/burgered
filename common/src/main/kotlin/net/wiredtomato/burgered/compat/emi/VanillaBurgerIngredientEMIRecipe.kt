@@ -8,7 +8,6 @@ import dev.emi.emi.api.widget.WidgetHolder
 import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.item.crafting.RecipeHolder
 import net.minecraft.world.item.crafting.SmithingRecipe
-import net.wiredtomato.burgered.Burgered
 import net.wiredtomato.burgered.api.data.burger.BurgerStackables
 import net.wiredtomato.burgered.init.BurgeredItems
 
@@ -19,7 +18,6 @@ class VanillaBurgerIngredientEMIRecipe(
         inputs.add(EmiIngredient.of(Ingredient.of(BurgeredItems.BOOK_OF_BURGERS)))
         inputs.add(EmiIngredient.of(BurgerStackables.map { EmiIngredient.of(Ingredient.of(it.item)) }))
         inputs.add(EmiIngredient.of(Ingredient.of(BurgeredItems.BURGER)))
-        Burgered.LOGGER.info("${BurgeredEmiPlugin.vanillaIngredientStacks}")
         outputs.add(BurgeredEmiPlugin.vanillaIngredientStacks.first())
     }
 
