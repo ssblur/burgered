@@ -100,7 +100,7 @@ class BurgerStackerEntity(
 
     fun addIngredient(player: Player, stack: ItemStack, ingredient: BurgerIngredient, consume: Boolean = true, updateSloppy: Boolean = true): Component? {
         var burgerComponent = burger.getOrDefault(BurgeredDataComponents.BURGER, BurgerComponent.DEFAULT)
-        val result = BurgerComponent.appendIngredient(burgerComponent, burger, stack.copy(), ingredient)
+        val result = BurgerComponent.appendIngredient(burgerComponent, burger, stack.copyWithCount(1), ingredient)
         burgerComponent = burger.getOrDefault(BurgeredDataComponents.BURGER, BurgerComponent.DEFAULT)
         if (result == null) {
             setChanged()

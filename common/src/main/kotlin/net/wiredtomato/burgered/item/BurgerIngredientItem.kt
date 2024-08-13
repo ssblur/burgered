@@ -14,8 +14,6 @@ import net.wiredtomato.burgered.api.Burger
 import net.wiredtomato.burgered.api.StatusEffectEntry
 import net.wiredtomato.burgered.api.ingredient.BurgerIngredient
 import net.wiredtomato.burgered.api.rendering.IngredientRenderSettings
-import net.wiredtomato.burgered.init.BurgeredDataComponents
-import net.wiredtomato.burgered.item.components.DirtyComponent
 import net.wiredtomato.burgered.platform.PossibleEffectFactory
 import org.joml.Vector3d
 import java.util.*
@@ -36,32 +34,6 @@ open class BurgerIngredientItem(properties: BurgerIngredientProperties) : Item(p
     override fun renderSettings(stack: ItemStack): IngredientRenderSettings = renderSettings
 
     override fun onEat(entity: LivingEntity, world: Level, stack: ItemStack, component: FoodProperties) { }
-
-    override fun inventoryTick(stack: ItemStack, world: Level, entity: Entity, slot: Int, selected: Boolean) {
-        val component = stack.getOrDefault(BurgeredDataComponents.DIRTY, DirtyComponent(true))
-        if (component.dirty) {
-            val effects = statusEffects(stack)
-            val foodComponent = FoodProperties(
-                saturation(stack),
-                overSaturation(stack).toFloat(),
-                effects.isNotEmpty(),
-                0.5f,
-                Optional.empty(),
-                effects
-            )
-
-            stack.set(DataComponents.FOOD, foodComponent)
-            stack.set(BurgeredDataComponents.DIRTY, DirtyComponent(false))
-        }
-    }
-
-
-    override fun components(): DataComponentMap {
-        val builder = DataComponentMap.builder()
-        builder.addAll(super.components())
-        builder.set(BurgeredDataComponents.DIRTY, DirtyComponent(true))
-        return builder.build()
-    }
 
     class BurgerIngredientProperties : Properties() {
         private var saturation = 0
@@ -91,6 +63,19 @@ open class BurgerIngredientItem(properties: BurgerIngredientProperties) : Item(p
         fun renderSettings(settings: IngredientRenderSettings): BurgerIngredientProperties {
             renderSettings = settings
             return this
+        }
+
+        fun createFoodComponent(): BurgerIngredientProperties {
+            val foodComponent = FoodProperties(
+                saturation(),
+                overSaturation().toFloat(),
+                statusEffects().isNotEmpty(),
+                0.5f,
+                Optional.empty(),
+                statusEffects()
+            )
+
+            return component(DataComponents.FOOD, foodComponent)
         }
 
         override fun <T : Any> component(type: DataComponentType<T>, value: T): BurgerIngredientProperties {

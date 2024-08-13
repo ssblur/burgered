@@ -7,7 +7,6 @@ import net.wiredtomato.burgered.Burgered
 import net.wiredtomato.burgered.api.registry.RegistryDelegate
 import net.wiredtomato.burgered.api.registry.registered
 import net.wiredtomato.burgered.item.components.BurgerComponent
-import net.wiredtomato.burgered.item.components.DirtyComponent
 import net.wiredtomato.burgered.item.components.VanillaBurgerIngredientComponent
 
 object BurgeredDataComponents {
@@ -19,10 +18,6 @@ object BurgeredDataComponents {
 
     val VANILLA_BURGER_INGREDIENT by registering<VanillaBurgerIngredientComponent>("vanilla_burger_ingredient") {
         this.persistent(VanillaBurgerIngredientComponent.CODEC).build()
-    }
-
-    val DIRTY by registering<DirtyComponent>("dirty") {
-        this.persistent(DirtyComponent.CODEC).build()
     }
 
     fun <T> registering(name: String, create: DataComponentType.Builder<T>.() -> DataComponentType<T>): RegistryDelegate<BurgeredDataComponents, DataComponentType<T>> {

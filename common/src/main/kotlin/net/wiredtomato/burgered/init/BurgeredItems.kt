@@ -27,6 +27,7 @@ object BurgeredItems {
                 .saturation(1)
                 .overSaturation(1.0)
                 .renderSettings(IngredientRenderSettings.ItemModel3d(Vector3d(1.0), Vector3d(), 2.0))
+                .createFoodComponent()
         )
     }
 
@@ -38,6 +39,7 @@ object BurgeredItems {
                 .saturation(1)
                 .overSaturation(1.0)
                 .renderSettings(IngredientRenderSettings.ItemModel3d(Vector3d(1.0), Vector3d(), 2.0))
+                .createFoodComponent()
         )
     }
 
@@ -50,6 +52,7 @@ object BurgeredItems {
                 .overSaturation(2.0)
                 .renderSettings(IngredientRenderSettings.ItemModel3d(Vector3d(1.0), Vector3d(), 1.0))
                 .statusEffect(MobEffectInstance(MobEffects.POISON, 200, 2), 0.25f)
+                .createFoodComponent()
         )
     }
 
@@ -61,6 +64,7 @@ object BurgeredItems {
                 .saturation(4)
                 .overSaturation(8.0)
                 .renderSettings(IngredientRenderSettings.ItemModel3d(Vector3d(1.0), Vector3d(), 1.0))
+                .createFoodComponent()
         )
     }
 
@@ -72,6 +76,7 @@ object BurgeredItems {
                 .saturation(1)
                 .overSaturation(0.25)
                 .renderSettings(IngredientRenderSettings.ItemModel3d(Vector3d(1.0), Vector3d(), 1.0))
+                .createFoodComponent()
         )
     }
 
@@ -83,6 +88,7 @@ object BurgeredItems {
                 .saturation(1)
                 .overSaturation(0.25)
                 .renderSettings(IngredientRenderSettings.ItemModel3d(Vector3d(1.0), Vector3d(), 0.0))
+                .createFoodComponent()
         )
     }
 
@@ -94,6 +100,7 @@ object BurgeredItems {
                 .saturation(7)
                 .overSaturation(8.0)
                 .renderSettings(IngredientRenderSettings.ItemModel3d(Vector3d(1.0), Vector3d(), 4.0))
+                .createFoodComponent()
         )
     }
 
@@ -105,6 +112,7 @@ object BurgeredItems {
                 .saturation(2)
                 .overSaturation(1.0)
                 .renderSettings(IngredientRenderSettings.ItemModel3d(Vector3d(1.0), Vector3d(), 0.0))
+                .createFoodComponent()
         )
     }
 
@@ -122,13 +130,14 @@ object BurgeredItems {
                 .saturation(2)
                 .overSaturation(4.0)
                 .renderSettings(IngredientRenderSettings.ItemModel2d(Vector3d(0.5), Vector3d()))
+                .createFoodComponent()
         )
     }
 
     val BURGER by registering(
         "burger"
     ) {
-        BurgerItem(Item.Properties())
+        BurgerItem(Item.Properties().stacksTo(64))
     }
 
     val BOOK_OF_BURGERS by registering(
