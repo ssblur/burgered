@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level
 import net.wiredtomato.burgered.api.Burger
 import net.wiredtomato.burgered.api.StatusEffectEntry
 import net.wiredtomato.burgered.api.ingredient.BurgerIngredient
+import net.wiredtomato.burgered.api.ingredient.ingredient
 import net.wiredtomato.burgered.data.text.CommonText
 import net.wiredtomato.burgered.init.BurgeredDataComponents
 import net.wiredtomato.burgered.init.BurgeredItems
@@ -89,8 +90,7 @@ data class BurgerComponent(
         }
 
         fun fromItem(ingredient: Item): BurgerIngredient {
-            if (ingredient !is BurgerIngredient) throw IllegalStateException("Non ingredient item found: $ingredient")
-            return ingredient
+            return ingredient.ingredient() ?: throw IllegalStateException("Non ingredient item found: $ingredient")
         }
 
         override fun appendIngredient(burger: BurgerComponent, stack: ItemStack, ingredientStack: ItemStack, ingredient: BurgerIngredient): Component? {

@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.UseAnim
 import net.minecraft.world.level.Level
+import net.wiredtomato.burgered.Burgered
 import net.wiredtomato.burgered.init.BurgeredDataComponents
 import net.wiredtomato.burgered.item.components.BurgerComponent
 import java.util.*
@@ -32,6 +33,8 @@ class BurgerItem(properties: Properties) : Item(properties) {
             val statusEffects = component.statusEffects()
             val eatTime = component.eatTime()
 
+            Burgered.LOGGER.info("creating food component")
+
             val foodComponent = FoodProperties(
                 hunger,
                 saturation.toFloat(),
@@ -42,6 +45,7 @@ class BurgerItem(properties: Properties) : Item(properties) {
             )
 
             stack.set(DataComponents.FOOD, foodComponent)
+            Burgered.LOGGER.info("${stack.get(DataComponents.FOOD)}")
             stack.set(BurgeredDataComponents.BURGER, BurgerComponent(component.ingredients(), component.sloppiness(), false))
         }
     }

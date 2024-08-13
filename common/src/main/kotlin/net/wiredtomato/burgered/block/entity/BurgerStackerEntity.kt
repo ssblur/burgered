@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityTicker
 import net.minecraft.world.level.block.state.BlockState
 import net.wiredtomato.burgered.api.ingredient.BurgerIngredient
+import net.wiredtomato.burgered.api.ingredient.ingredient
 import net.wiredtomato.burgered.init.BurgeredBlockEntities
 import net.wiredtomato.burgered.init.BurgeredDataComponents
 import net.wiredtomato.burgered.init.BurgeredItems
@@ -33,9 +34,10 @@ class BurgerStackerEntity(
         val item = stack.item
         var result: Component? = null
         var interact = false
-        if (item is BurgerIngredient) {
+        val burgerIngredient = item.ingredient()
+        if (burgerIngredient != null) {
             ensureNonEmptyBurger()
-            result = addIngredient(player, stack, item)
+            result = addIngredient(player, stack, burgerIngredient)
             interact = true
         } else if (item is BurgerItem) {
             ensureNonEmptyBurger()

@@ -22,7 +22,7 @@ open class BurgerIngredientItem(properties: BurgerIngredientProperties) : Item(p
     private val statusEffects = properties.statusEffects()
     private val renderSettings = properties.renderSettings()
 
-    override fun canBePutOn(stack: ItemStack?, burger: Burger): Boolean {
+    override fun canBePutOn(stack: ItemStack, burger: Burger): Boolean {
         return true
     }
 
