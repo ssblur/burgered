@@ -6,7 +6,7 @@ import net.wiredtomato.burgered.api.event.LivingEntityEvents
 import net.wiredtomato.burgered.api.ingredient.BurgerIngredient
 
 interface Burger : LivingEntityEvents.EatCallback {
-    fun ingredients(): List<Pair<ItemStack, BurgerIngredient>>
+    fun ingredients(): List<BurgerIngredient>
     fun saturation(): Int
     fun overSaturation(): Double
     fun statusEffects(): List<StatusEffectEntry>

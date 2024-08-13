@@ -1,10 +1,8 @@
 package net.wiredtomato.burgered.item
 
-import net.minecraft.core.component.DataComponentMap
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.effect.MobEffectInstance
-import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.food.FoodProperties
 import net.minecraft.world.item.Item
@@ -24,14 +22,14 @@ open class BurgerIngredientItem(properties: BurgerIngredientProperties) : Item(p
     private val statusEffects = properties.statusEffects()
     private val renderSettings = properties.renderSettings()
 
-    override fun canBePutOn(stack: ItemStack, burger: Burger): Boolean {
+    override fun canBePutOn(stack: ItemStack?, burger: Burger): Boolean {
         return true
     }
 
-    override fun saturation(stack: ItemStack): Int = saturation
-    override fun overSaturation(stack: ItemStack): Double = overSaturation
-    override fun statusEffects(stack: ItemStack): List<StatusEffectEntry> = statusEffects
-    override fun renderSettings(stack: ItemStack): IngredientRenderSettings = renderSettings
+    override fun saturation(): Int = saturation
+    override fun overSaturation(): Double = overSaturation
+    override fun statusEffects(): List<StatusEffectEntry> = statusEffects
+    override fun renderSettings(): IngredientRenderSettings = renderSettings
 
     override fun onEat(entity: LivingEntity, world: Level, stack: ItemStack, component: FoodProperties) { }
 

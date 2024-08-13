@@ -42,7 +42,7 @@ class BurgerStackerEntity(
             val ingredients = stack.getOrDefault(BurgeredDataComponents.BURGER, BurgerComponent.DEFAULT).ingredients()
             result = null
             ingredients.forEach { ingredient ->
-                val oResult = addIngredient(player, ingredient.first, ingredient.second, false, updateSloppy = false)
+                val oResult = addIngredient(player, null, ingredient, false, updateSloppy = false)
                 if (oResult != null) result = oResult
             }
             updateSloppiness(burger.getOrDefault(BurgeredDataComponents.BURGER, BurgerComponent.DEFAULT))
@@ -98,14 +98,14 @@ class BurgerStackerEntity(
         super.setChanged()
     }
 
-    fun addIngredient(player: Player, stack: ItemStack, ingredient: BurgerIngredient, consume: Boolean = true, updateSloppy: Boolean = true): Component? {
+    fun addIngredient(player: Player, stack: ItemStack?, ingredient: BurgerIngredient, consume: Boolean = true, updateSloppy: Boolean = true): Component? {
         var burgerComponent = burger.getOrDefault(BurgeredDataComponents.BURGER, BurgerComponent.DEFAULT)
-        val result = BurgerComponent.appendIngredient(burgerComponent, burger, stack.copyWithCount(1), ingredient)
+        val result = BurgerComponent.appendIngredient(burgerComponent, burger, stack?.copyWithCount(1) ?: ingredient.asItem().defaultInstance, ingredient)
         burgerComponent = burger.getOrDefault(BurgeredDataComponents.BURGER, BurgerComponent.DEFAULT)
         if (result == null) {
             setChanged()
             if (updateSloppy) updateSloppiness(burgerComponent)
-            if (consume) stack.consume(1, player)
+            if (consume) stack?.consume(1, player)
         }
 
         if (updateSloppy) ticksSinceLastChange = 0

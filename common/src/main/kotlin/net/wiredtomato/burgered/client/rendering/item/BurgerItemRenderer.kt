@@ -61,18 +61,18 @@ object BurgerItemRenderer : DynamicItemRenderer {
         itemOffsets(matrices, newMode)
         burger.ingredients().forEachIndexed { i, ingredient ->
             if (i >= BurgeredClientConfig.maxRenderedBurgerIngredients) return@forEachIndexed
-            val renderSettings = ingredient.second.renderSettings(ingredient.first)
-            val model = getModel(itemRenderer, client.modelManager, ingredient.first, ingredient.second)
+            val renderSettings = ingredient.renderSettings()
+            val model = getModel(itemRenderer, client.modelManager, ingredient)
 
-            val offsets = sloppinessOffset(burger, ingredient.second, i)
+            val offsets = sloppinessOffset(burger, ingredient, i)
             matrices.pushPose()
-            ingredientOffset(matrices, ctx, ingredient.first, ingredient.second)
+            ingredientOffset(matrices, ctx, ingredient)
             matrices.mulPose(Axis.XP.rotationDegrees(offsets.x))
             matrices.mulPose(Axis.YP.rotationDegrees(offsets.y))
             matrices.mulPose(Axis.ZP.rotationDegrees(offsets.z))
 
             itemRenderer.render(
-                ingredient.first,
+                ingredient.asItem().defaultInstance,
                 newMode,
                 false,
                 matrices,
@@ -133,16 +133,15 @@ object BurgerItemRenderer : DynamicItemRenderer {
     fun getModel(
         itemRenderer: ItemRenderer,
         modelManager: ModelManager,
-        ingredientStack: ItemStack,
         ingredient: BurgerIngredient
     ): BakedModel {
-        val renderSettings = ingredient.renderSettings(ingredientStack)
+        val renderSettings = ingredient.renderSettings()
         return when (renderSettings) {
             is WithCustomModel -> {
                 modelManager.getModel(renderSettings.customModelId.toModelResourceLocation())
             }
             else -> {
-                itemRenderer.itemModelShaper.getItemModel(ingredientStack)
+                itemRenderer.itemModelShaper.getItemModel(ingredient.asItem().defaultInstance)
             }
         }
     }
@@ -150,10 +149,9 @@ object BurgerItemRenderer : DynamicItemRenderer {
     fun ingredientOffset(
         matrices: PoseStack,
         originalMode: ItemDisplayContext,
-        ingredientStack: ItemStack,
         ingredient: BurgerIngredient
     ) {
-        val renderSettings = ingredient.renderSettings(ingredientStack)
+        val renderSettings = ingredient.renderSettings()
         val scale = renderSettings.renderScale
         val offset = renderSettings.offset
 

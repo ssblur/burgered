@@ -1,8 +1,5 @@
 package net.wiredtomato.burgered.neoforge.data.gen
 
-import net.minecraft.data.loot.LootTableProvider
-import net.minecraft.data.loot.LootTableProvider.SubProviderEntry
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.data.event.GatherDataEvent
@@ -45,6 +42,11 @@ object BurgeredDataGen {
         generator.addProvider(
             event.includeServer(),
             BurgeredLootTableProvider(output, event.lookupProvider)
+        )
+
+        generator.addProvider(
+            event.includeServer(),
+            BurgeredBlockTagProvider(output, event.lookupProvider, event.existingFileHelper)
         )
     }
 }

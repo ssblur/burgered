@@ -6,7 +6,10 @@ import com.mojang.serialization.MapCodec.MapCodecCodec
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.nbt.*
+import net.minecraft.nbt.EndTag
+import net.minecraft.nbt.NbtAccounter
+import net.minecraft.nbt.NbtOps
+import net.minecraft.nbt.Tag
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec

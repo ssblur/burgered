@@ -13,7 +13,6 @@ import net.wiredtomato.burgered.api.rendering.IngredientRenderSettings
 import net.wiredtomato.burgered.item.BurgerIngredientItem
 import net.wiredtomato.burgered.item.BurgerIngredientItem.BurgerIngredientProperties
 import net.wiredtomato.burgered.item.BurgerItem
-import net.wiredtomato.burgered.item.VanillaItemBurgerIngredientItem
 import org.joml.Vector3d
 
 object BurgeredItems {
@@ -116,20 +115,12 @@ object BurgeredItems {
         )
     }
 
-    val ESTROGEN_WAFFLE by registering("estrogen_waffle") { Item(Item.Properties()) }
-
-    val CUSTOM_BURGER_INGREDIENT by registering(
-        "custom_burger_ingredient"
-    ) { Item(Item.Properties()) }
-
-    val VANILLA_INGREDIENT by registering(
-        "vanilla_ingredient"
-    ) {
-        VanillaItemBurgerIngredientItem(
+    val ESTROGEN_WAFFLE by registering("estrogen_waffle") {
+        BurgerIngredientItem(
             BurgerIngredientProperties()
                 .saturation(2)
-                .overSaturation(4.0)
-                .renderSettings(IngredientRenderSettings.ItemModel2d(Vector3d(0.5), Vector3d()))
+                .overSaturation(1.0)
+                .renderSettings(IngredientRenderSettings.ItemModel2d(Vector3d(1.0), Vector3d()))
                 .createFoodComponent()
         )
     }

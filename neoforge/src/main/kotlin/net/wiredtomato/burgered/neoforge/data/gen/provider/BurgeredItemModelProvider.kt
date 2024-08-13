@@ -20,8 +20,6 @@ class BurgeredItemModelProvider(
         val TOP_BUN_MODEL = ModelFile.UncheckedModelFile(Burgered.modLoc("item/top_bun"))
 
         parented(BurgeredItems.BURGER, DYNAMICLY_RENDERED).guiLight(GuiLight.FRONT)
-        parented(BurgeredItems.VANILLA_INGREDIENT, DYNAMICLY_RENDERED).guiLight(GuiLight.FRONT)
-        parented(BurgeredItems.CUSTOM_BURGER_INGREDIENT, TOP_BUN_MODEL)
 
         basicItem(BurgeredItems.BOOK_OF_BURGERS)
         basicItem(BurgeredItems.ESTROGEN_WAFFLE)

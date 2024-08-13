@@ -9,7 +9,6 @@ import net.wiredtomato.burgered.Burgered
 import net.wiredtomato.burgered.api.registry.RegistryDelegate
 import net.wiredtomato.burgered.api.registry.registered
 import net.wiredtomato.burgered.recipe.GrillingRecipe
-import net.wiredtomato.burgered.recipe.VanillaBurgerIngredientRecipe
 
 object BurgeredRecipes {
     val RECIPES = DeferredRegister.create(Burgered.MOD_ID, Registries.RECIPE_TYPE)
@@ -30,7 +29,6 @@ object BurgeredRecipes {
     object Serializers {
         val RECIPE_SERIALIZERS = DeferredRegister.create(Burgered.MOD_ID, Registries.RECIPE_SERIALIZER)
 
-        val VANILLA_BURGER_INGREDIENT by registering("vanilla_burger_ingredient", VanillaBurgerIngredientRecipe.SERIALIZER)
         val GRILLING by registering("grilling", GrillingRecipe.SERIALIZER)
 
         fun <T, V : RecipeSerializer<T>> registering(path: String, serializer: V): RegistryDelegate<Serializers, V> {
