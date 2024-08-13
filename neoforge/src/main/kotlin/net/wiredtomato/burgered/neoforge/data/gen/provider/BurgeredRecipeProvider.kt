@@ -11,6 +11,7 @@ import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.data.recipes.RecipeProvider
 import net.minecraft.data.recipes.ShapedRecipeBuilder
 import net.minecraft.data.recipes.ShapelessRecipeBuilder
+import net.minecraft.data.recipes.SingleItemRecipeBuilder
 import net.minecraft.data.recipes.SmithingTransformRecipeBuilder
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.ItemTags
@@ -86,7 +87,7 @@ class BurgeredRecipeProvider(
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, BurgeredItems.RAW_BEEF_PATTY)
             .requires(Items.BEEF)
-            .requires(ItemTags.SWORDS)
+            .requires(Items.STICK)
             .unlockedBy(getHasName(Items.BEEF), has(Items.BEEF))
             .save(recipeOutput)
 
@@ -98,12 +99,30 @@ class BurgeredRecipeProvider(
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, BurgeredItems.LETTUCE)
             .requires(Items.SEA_PICKLE)
-            .requires(ItemTags.SWORDS)
+            .requires(Items.STICK)
             .unlockedBy(getHasName(Items.SEA_PICKLE), has(Items.SEA_PICKLE))
             .save(recipeOutput)
 
-        stonecutterResultFromBase(recipeOutput, RecipeCategory.FOOD, BurgeredItems.TOP_BUN, Items.BREAD)
-        stonecutterResultFromBase(recipeOutput, RecipeCategory.FOOD, BurgeredItems.BOTTOM_BUN, Items.BREAD)
+        SingleItemRecipeBuilder.stonecutting(
+            Ingredient.of(Items.BREAD),
+            RecipeCategory.FOOD,
+            BurgeredItems.TOP_BUN,
+            2
+        ).unlockedBy(
+            getHasName(Items.BREAD),
+            has(Items.BREAD)
+        ).save(recipeOutput, Burgered.modLoc("top_bun_stonecutting"))
+
+        SingleItemRecipeBuilder.stonecutting(
+            Ingredient.of(Items.BREAD),
+            RecipeCategory.FOOD,
+            BurgeredItems.BOTTOM_BUN,
+            2
+        ).unlockedBy(
+            getHasName(Items.BREAD),
+            has(Items.BREAD)
+        ).save(recipeOutput, Burgered.modLoc("bottom_bun_stonecutting"))
+
         grillingRecipe(
             recipeOutput,
             CookingBookCategory.FOOD,

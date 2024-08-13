@@ -64,15 +64,8 @@ class GrillEntity(
 
     fun getOrGiveItem(world: Level, player: Player, stack: ItemStack, slot: Int): InteractionResult {
         val recipe = getRecipe(world, SingleRecipeInput(stack))
-        val stack = player.mainHandItem
-        val inventoryItem = inventory[slot].copy()
-        val expandable = (stack.maxStackSize - stack.count).coerceAtMost(inventoryItem.count)
         if (!inventory[slot].isEmpty) {
-            stack.count += expandable
-            if (inventoryItem.count > expandable) {
-                inventoryItem.count -= expandable
-                player.addItem(inventoryItem)
-            }
+            Block.popResource(world, blockPos, inventory[slot])
             inventory[slot] = ItemStack.EMPTY
             return InteractionResult.SUCCESS
         }

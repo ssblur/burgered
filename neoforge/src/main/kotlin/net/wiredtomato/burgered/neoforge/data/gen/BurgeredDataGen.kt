@@ -1,14 +1,13 @@
 package net.wiredtomato.burgered.neoforge.data.gen
 
+import net.minecraft.data.loot.LootTableProvider
+import net.minecraft.data.loot.LootTableProvider.SubProviderEntry
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.data.event.GatherDataEvent
 import net.wiredtomato.burgered.Burgered
-import net.wiredtomato.burgered.neoforge.data.gen.provider.BurgeredBlockStateProvider
-import net.wiredtomato.burgered.neoforge.data.gen.provider.BurgeredEnUsLangProvider
-import net.wiredtomato.burgered.neoforge.data.gen.provider.BurgeredItemModelProvider
-import net.wiredtomato.burgered.neoforge.data.gen.provider.BurgeredRecipeProvider
-import net.wiredtomato.burgered.neoforge.data.gen.provider.BurgeredStackablesProvider
+import net.wiredtomato.burgered.neoforge.data.gen.provider.*
 
 @EventBusSubscriber(modid = Burgered.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 object BurgeredDataGen {
@@ -41,6 +40,11 @@ object BurgeredDataGen {
         generator.addProvider(
             event.includeServer(),
             BurgeredStackablesProvider(output, event.lookupProvider)
+        )
+
+        generator.addProvider(
+            event.includeServer(),
+            BurgeredLootTableProvider(output, event.lookupProvider)
         )
     }
 }
