@@ -85,19 +85,19 @@ class BurgeredRecipeProvider(
             .unlockedBy(getHasName(Items.MILK_BUCKET), has(Items.MILK_BUCKET))
             .save(recipeOutput)
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, BurgeredItems.RAW_BEEF_PATTY)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, BurgeredItems.RAW_BEEF_PATTY, 4)
             .requires(Items.BEEF)
             .requires(Items.STICK)
             .unlockedBy(getHasName(Items.BEEF), has(Items.BEEF))
             .save(recipeOutput)
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, BurgeredItems.PICKLED_BEETS)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, BurgeredItems.PICKLED_BEETS, 4)
             .requires(Items.SEA_PICKLE)
             .requires(Items.BEETROOT)
             .unlockedBy(getHasName(Items.BEETROOT), has(Items.BEETROOT))
             .save(recipeOutput)
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, BurgeredItems.LETTUCE)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, BurgeredItems.LETTUCE, 4)
             .requires(Items.SEA_PICKLE)
             .requires(Items.STICK)
             .unlockedBy(getHasName(Items.SEA_PICKLE), has(Items.SEA_PICKLE))

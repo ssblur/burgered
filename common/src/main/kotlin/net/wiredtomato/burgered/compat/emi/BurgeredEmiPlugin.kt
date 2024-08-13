@@ -4,11 +4,14 @@ import dev.emi.emi.api.EmiEntrypoint
 import dev.emi.emi.api.EmiPlugin
 import dev.emi.emi.api.EmiRegistry
 import dev.emi.emi.api.recipe.EmiRecipeCategory
+import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.item.crafting.RecipeType
 import net.wiredtomato.burgered.Burgered
 import net.wiredtomato.burgered.api.data.burger.BurgerStackables
+import net.wiredtomato.burgered.init.BurgeredBlocks
 import net.wiredtomato.burgered.init.BurgeredDataComponents
 import net.wiredtomato.burgered.init.BurgeredItems
 import net.wiredtomato.burgered.init.BurgeredRecipes
@@ -19,6 +22,7 @@ import net.wiredtomato.burgered.recipe.VanillaBurgerIngredientRecipe
 class BurgeredEmiPlugin : EmiPlugin {
     override fun register(registry: EmiRegistry) {
         registry.addCategory(GRILLING_RECIPE_CATEGORY)
+        registry.addWorkstation(GRILLING_RECIPE_CATEGORY, EmiIngredient.of(Ingredient.of(BurgeredBlocks.GRILL)))
         registerStacks(registry)
 
         val manager = registry.recipeManager
