@@ -8,9 +8,10 @@ import net.wiredtomato.burgered.api.event.LivingEntityEvents
 import net.wiredtomato.burgered.api.rendering.IngredientRenderSettings
 
 interface BurgerIngredient : ItemLike, LivingEntityEvents.EatCallback {
-    fun canBePutOn(stack: ItemStack, burger: Burger): Boolean
-    fun saturation(): Int
-    fun overSaturation(): Double
-    fun statusEffects(): List<StatusEffectEntry>
-    fun renderSettings(): IngredientRenderSettings
+    fun canBePutOn(ingredientStack: ItemStack, burger: Burger, burgerStack: ItemStack): Boolean
+    fun saturation(instance: BurgerIngredientInstance): Int
+    fun overSaturation(instance: BurgerIngredientInstance): Double
+    fun statusEffects(instance: BurgerIngredientInstance): List<StatusEffectEntry>
+    fun renderSettings(instance: BurgerIngredientInstance): IngredientRenderSettings
+    fun defaultQuality(): IngredientQuality = IngredientQuality.NORMAL
 }

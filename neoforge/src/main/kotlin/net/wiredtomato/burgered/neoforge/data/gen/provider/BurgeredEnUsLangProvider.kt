@@ -36,9 +36,6 @@ class BurgeredEnUsLangProvider(output: PackOutput) : LanguageProvider(output, Bu
         add("config.burgered.maxSloppinessRotationY.tooltip", "Maximum degrees to rotate an ingredient along Y-axis")
         add("config.burgered.maxSloppinessRotationZ", "Maximum Ingredient Rotation Z")
         add("config.burgered.maxSloppinessRotationZ.tooltip", "Maximum degrees to rotate an ingredient along Z-axis")
-        add("config.burgered.renderNoTransform", "Render No Transform")
-        add("config.burgered.renderNoTransform.tooltip.line1", "Whether to always render ingredients with no default transformations")
-        add("config.burgered.renderNoTransform.tooltip.line2", "DISABLING THIS MAY CAUSE RENDERING ARTIFACTING WITH SOME INGREDIENTS AND MOD ADDONS")
     }
 
     private fun genLang(identifier: ResourceLocation): String =

@@ -4,11 +4,14 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.NonNullList
+import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.sounds.SoundEvents
+import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.player.Player
@@ -22,8 +25,13 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityTicker
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
+import net.minecraft.world.phys.Vec3
+import net.wiredtomato.burgered.api.ingredient.BurgerIngredient
+import net.wiredtomato.burgered.api.ingredient.IngredientQuality
 import net.wiredtomato.burgered.init.BurgeredBlockEntities
 import net.wiredtomato.burgered.init.BurgeredRecipes
+import net.wiredtomato.burgered.item.components.IngredientQualityComponent.Companion.defaultQuality
+import net.wiredtomato.burgered.item.components.IngredientQualityComponent.Companion.withQuality
 import net.wiredtomato.burgered.recipe.GrillingRecipe
 import net.wiredtomato.burgered.util.load
 import net.wiredtomato.burgered.util.save
@@ -34,6 +42,8 @@ class GrillEntity(
     state: BlockState
 ) : BlockEntity(BurgeredBlockEntities.GRILL, pos, state) {
     private var cookTimes = mutableListOf(0, 0)
+    private var skillCheckTimes = mutableListOf(SKILL_CHECK_NAN, SKILL_CHECK_NAN)
+    private var qualities = mutableListOf(IngredientQuality.EXCELLENT, IngredientQuality.EXCELLENT)
     private val inventory = NonNullList.withSize(2, ItemStack.EMPTY)
 
     fun onUse(
@@ -50,37 +60,85 @@ class GrillEntity(
         return when (state.getValue(HorizontalDirectionalBlock.FACING)) {
             Direction.NORTH, Direction.SOUTH -> {
                 if (hitPos.x > center.x) {
-                    getOrGiveItem(world, player, stack, 0)
-                } else getOrGiveItem(world, player, stack, 1)
+                    slotInteraction(world, player, stack, 0)
+                } else slotInteraction(world, player, stack, 1)
             }
             Direction.EAST, Direction.WEST -> {
                 if (hitPos.z < center.z) {
-                    getOrGiveItem(world, player, stack, 0)
-                } else getOrGiveItem(world, player, stack, 1)
+                    slotInteraction(world, player, stack, 0)
+                } else slotInteraction(world, player, stack, 1)
             }
 
             else -> InteractionResult.PASS
         }
     }
 
-    fun getOrGiveItem(world: Level, player: Player, stack: ItemStack, slot: Int): InteractionResult {
+    fun slotInteraction(world: Level, player: Player, stack: ItemStack, slot: Int): InteractionResult {
         val recipe = getRecipe(world, SingleRecipeInput(stack))
+        if (isDuringSkillCheck(slot)) {
+            if (shouldIncreaseQuality(slot)) {
+                qualities[slot] = qualities[slot].nextUp()
+            }
+
+            resetSkillCheckTime(slot)
+            return InteractionResult.SUCCESS_NO_ITEM_USED
+        }
+
         if (!inventory[slot].isEmpty) {
             Block.popResource(world, blockPos, inventory[slot])
             inventory[slot] = ItemStack.EMPTY
+            cookTimes[slot] = 0
+            skillCheckTimes[slot] = SKILL_CHECK_NAN
+            qualities[slot] = IngredientQuality.NORMAL
             setChanged()
-            return InteractionResult.SUCCESS
+            return InteractionResult.SUCCESS_NO_ITEM_USED
         }
 
         if (recipe == null) {
             return InteractionResult.PASS
         } else {
             inventory[slot] = stack.copyWithCount(1)
+            qualities[slot] = stack.defaultQuality()
+            resetSkillCheckTime(slot)
             stack.consume(1, player)
         }
 
         setChanged()
         return InteractionResult.SUCCESS
+    }
+
+    fun getParticlePos(slot: Int): Vec3 {
+        val center = blockPos.center
+        var pos = center.add(0.0, 0.6, 0.0)
+        val direction = blockState.getValue(HorizontalDirectionalBlock.FACING)
+        when (direction) {
+            Direction.NORTH, Direction.SOUTH -> {
+                pos = pos.add(-0.25 * ((slot * 2) - 1), 0.0, 0.0)
+            }
+
+            Direction.EAST, Direction.WEST -> {
+                pos = pos.add(0.0, 0.0, 0.25 * ((slot * 2) - 1))
+            }
+
+            else -> {}
+        }
+
+        return pos
+    }
+
+    fun resetSkillCheckTime(slot: Int) {
+        val level = this.level ?: return
+        skillCheckTimes[slot] = level.random.nextIntBetweenInclusive(10, 40)
+    }
+
+    fun shouldIncreaseQuality(slot: Int): Boolean {
+        val skillCheckTime = skillCheckTimes[slot]
+        return skillCheckTime in (-20..0)
+    }
+
+    fun isDuringSkillCheck(slot: Int): Boolean {
+        val skillCheckTime = skillCheckTimes[slot]
+        return skillCheckTime in -40..0
     }
 
     fun renderStacks() = inventory.toList().map { it.copy() }
@@ -92,11 +150,16 @@ class GrillEntity(
 
     override fun saveAdditional(nbt: CompoundTag, lookupProvider: HolderLookup.Provider) {
         nbt.putIntArray("cookTimes", cookTimes)
+        nbt.putIntArray("ttSkillCheck", skillCheckTimes)
         inventory.save(nbt)
     }
 
     override fun loadAdditional(nbt: CompoundTag, lookupProvider: HolderLookup.Provider) {
         cookTimes = nbt.getIntArray("cookTimes").toMutableList()
+        skillCheckTimes = nbt.getIntArray("ttSkillCheck").toMutableList()
+        if (skillCheckTimes.isEmpty()) {
+            skillCheckTimes = mutableListOf(SKILL_CHECK_NAN, SKILL_CHECK_NAN)
+        }
         inventory.load(nbt)
     }
 
@@ -113,17 +176,52 @@ class GrillEntity(
     }
 
     companion object : BlockEntityTicker<GrillEntity> {
+        private val SKILL_CHECK_NAN = Int.MAX_VALUE
+
         override fun tick(world: Level, blockPos: BlockPos, blockState: BlockState, grill: GrillEntity) = with(grill) {
             inventory.forEachIndexed { i, stack ->
                 if (stack.isEmpty) return@forEachIndexed
 
                 val recipeInput = SingleRecipeInput(stack)
                 val recipeHolder = getRecipe(world, recipeInput) ?: return@forEachIndexed
+
+                skillCheckTimes[i]--
+                val skillCheckTime = skillCheckTimes[i]
+                if (isDuringSkillCheck(i) && world is ServerLevel) {
+                    val particlePos = getParticlePos(i)
+
+                    world.sendParticles(
+                        ParticleTypes.FLAME,
+                        particlePos.x,
+                        particlePos.y,
+                        particlePos.z,
+                        2,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    )
+                }
+
+                if (skillCheckTime < -40) {
+                    qualities[i] = qualities[i].nextDown()
+                    resetSkillCheckTime(i)
+                    world.playSound(
+                        null,
+                        blockPos,
+                        SoundEvents.BLAZE_SHOOT,
+                        SoundSource.BLOCKS,
+                        0.2f,
+                        0f
+                    )
+                }
+
                 cookTimes[i]++
                 val cookTime = cookTimes[i]
                 val recipe = recipeHolder.value
                 if (cookTime >= recipe.cookingTime) {
                     val result = recipe.assemble(recipeInput, world.registryAccess())
+                    if (result.item is BurgerIngredient) result.withQuality(qualities[i])
                     val transform = recipe.transform.copy()
                     inventory[i] = result
                     cookTimes[i] = 0

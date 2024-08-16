@@ -4,9 +4,10 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import net.wiredtomato.burgered.api.event.LivingEntityEvents
 import net.wiredtomato.burgered.api.ingredient.BurgerIngredient
+import net.wiredtomato.burgered.api.ingredient.BurgerIngredientInstance
 
 interface Burger : LivingEntityEvents.EatCallback {
-    fun ingredients(): List<BurgerIngredient>
+    fun ingredients(): List<BurgerIngredientInstance>
     fun saturation(): Int
     fun overSaturation(): Double
     fun statusEffects(): List<StatusEffectEntry>

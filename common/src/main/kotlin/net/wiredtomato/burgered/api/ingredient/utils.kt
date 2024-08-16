@@ -17,11 +17,11 @@ fun Item.ingredient(): BurgerIngredient? {
     if (BurgerStackables.map { it.item }.contains(this)) {
         val stackable = BurgerStackables.find { it.item == this }!!
         return object : BurgerIngredient {
-            override fun canBePutOn(stack: ItemStack, burger: Burger): Boolean = true
-            override fun saturation(): Int = stackable.hunger
-            override fun overSaturation(): Double = stackable.saturation.toDouble()
-            override fun statusEffects(): List<StatusEffectEntry> = stackable.statusEffects
-            override fun renderSettings(): IngredientRenderSettings = IngredientRenderSettings.ItemModel2d(Vector3d(0.5), Vector3d())
+            override fun canBePutOn(ingredientStack: ItemStack, burger: Burger, burgerStack: ItemStack): Boolean = true
+            override fun saturation(instance: BurgerIngredientInstance): Int = stackable.hunger
+            override fun overSaturation(instance: BurgerIngredientInstance): Double = stackable.saturation.toDouble()
+            override fun statusEffects(instance: BurgerIngredientInstance): List<StatusEffectEntry> = stackable.statusEffects
+            override fun renderSettings(instance: BurgerIngredientInstance): IngredientRenderSettings = IngredientRenderSettings.ItemModel2d(Vector3d(0.5), Vector3d())
             override fun asItem(): Item = this@ingredient
             override fun onEat(entity: LivingEntity, world: Level, stack: ItemStack, component: FoodProperties) { }
         }

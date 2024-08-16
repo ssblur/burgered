@@ -5,6 +5,8 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.MapCodec.MapCodecCodec
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
+import net.minecraft.core.component.DataComponentPatch
+import net.minecraft.core.component.PatchedDataComponentMap
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.EndTag
 import net.minecraft.nbt.NbtAccounter
@@ -14,7 +16,18 @@ import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
 import java.util.function.Supplier
+
+fun ItemStack.withPatch(patch: DataComponentPatch): ItemStack {
+    val copy = copy()
+    val components = copy.components
+    if (components is PatchedDataComponentMap) {
+        components.applyPatch(patch)
+    }
+
+    return copy
+}
 
 fun <T> List<T>.group(): List<Group<T>> {
     val groups = mutableListOf<Group<T>>()

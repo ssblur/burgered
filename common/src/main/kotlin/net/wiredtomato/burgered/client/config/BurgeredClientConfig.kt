@@ -3,7 +3,6 @@ package net.wiredtomato.burgered.client.config
 import dev.architectury.platform.Platform
 import kotlinx.serialization.Serializable
 import me.shedaniel.clothconfig2.api.ConfigBuilder
-import net.minecraft.ChatFormatting
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.wiredtomato.burgered.api.config.SimpleJsonConfig
@@ -26,11 +25,29 @@ data class BurgeredClientConfig(
             Platform.getConfigFolder().resolve("burgered/burgered-client.json")
         }
 
-        var maxRenderedBurgerIngredients by CONFIG.getSubProperty<Companion, Int>("rendering", "maxRenderedBurgerIngredients")
-        var maxSloppinessRotationX by CONFIG.getSubProperty<Companion, Float>("rendering", "maxSloppinessRotationX")
-        var maxSloppinessRotationY by CONFIG.getSubProperty<Companion, Float>("rendering", "maxSloppinessRotationY")
-        var maxSloppinessRotationZ by CONFIG.getSubProperty<Companion, Float>("rendering", "maxSloppinessRotationZ")
-        var renderNoTransform by CONFIG.getSubProperty<Companion, Boolean>("rendering", "renderNoTransform")
+        var maxRenderedBurgerIngredients
+            get() = CONFIG.instance().rendering.maxRenderedBurgerIngredients
+            set(value) {
+                CONFIG.instance().rendering.maxRenderedBurgerIngredients = value
+            }
+
+        var maxSloppinessRotationX
+            get() = CONFIG.instance().rendering.maxSloppinessRotationX
+            set(value) {
+                CONFIG.instance().rendering.maxSloppinessRotationX = value
+            }
+
+        var maxSloppinessRotationY
+            get() = CONFIG.instance().rendering.maxSloppinessRotationY
+            set(value) {
+                CONFIG.instance().rendering.maxSloppinessRotationY = value
+            }
+
+        var maxSloppinessRotationZ
+            get() = CONFIG.instance().rendering.maxSloppinessRotationZ
+            set(value) {
+                CONFIG.instance().rendering.maxSloppinessRotationZ = value
+            }
 
         fun createScreen(parent: Screen?): Screen {
             val builder = ConfigBuilder.create()
@@ -39,10 +56,14 @@ data class BurgeredClientConfig(
 
             val entries = builder.entryBuilder()
 
-            val rendering = builder.getOrCreateCategory(Component.translatable("config.burgered.client.category.rendering"))
+            val rendering =
+                builder.getOrCreateCategory(Component.translatable("config.burgered.client.category.rendering"))
             rendering.setDescription(arrayOf(Component.translatable("config.burgered.client.category.rendering.description")))
 
-            rendering.addEntry(entries.startIntField(Component.translatable("config.burgered.maxRenderedBurgerIngredients"), maxRenderedBurgerIngredients)
+            rendering.addEntry(entries.startIntField(
+                Component.translatable("config.burgered.maxRenderedBurgerIngredients"),
+                maxRenderedBurgerIngredients
+            )
                 .setMin(0)
                 .setMax(2048)
                 .setDefaultValue(256)
@@ -50,7 +71,10 @@ data class BurgeredClientConfig(
                 .setSaveConsumer { maxRenderedBurgerIngredients = it }
                 .build())
 
-            rendering.addEntry(entries.startFloatField(Component.translatable("config.burgered.maxSloppinessRotationX"), maxSloppinessRotationX)
+            rendering.addEntry(entries.startFloatField(
+                Component.translatable("config.burgered.maxSloppinessRotationX"),
+                maxSloppinessRotationX
+            )
                 .setMin(0f)
                 .setMax(360f)
                 .setDefaultValue(10f)
@@ -58,7 +82,10 @@ data class BurgeredClientConfig(
                 .setSaveConsumer { maxSloppinessRotationX = it }
                 .build())
 
-            rendering.addEntry(entries.startFloatField(Component.translatable("config.burgered.maxSloppinessRotationY"), maxSloppinessRotationY)
+            rendering.addEntry(entries.startFloatField(
+                Component.translatable("config.burgered.maxSloppinessRotationY"),
+                maxSloppinessRotationY
+            )
                 .setMin(0f)
                 .setMax(360f)
                 .setDefaultValue(90f)
@@ -66,21 +93,15 @@ data class BurgeredClientConfig(
                 .setSaveConsumer { maxSloppinessRotationY = it }
                 .build())
 
-            rendering.addEntry(entries.startFloatField(Component.translatable("config.burgered.maxSloppinessRotationZ"), maxSloppinessRotationZ)
+            rendering.addEntry(entries.startFloatField(
+                Component.translatable("config.burgered.maxSloppinessRotationZ"),
+                maxSloppinessRotationZ
+            )
                 .setMin(0f)
                 .setMax(360f)
                 .setDefaultValue(10f)
                 .setTooltip(Component.translatable("config.burgered.maxSloppinessRotationZ.tooltip"))
                 .setSaveConsumer { maxSloppinessRotationZ = it }
-                .build())
-
-            rendering.addEntry(entries.startBooleanToggle(Component.translatable("config.burgered.renderNoTransform"), renderNoTransform)
-                .setDefaultValue(true)
-                .setTooltip(
-                    Component.translatable("config.burgered.renderNoTransform.tooltip.line1"),
-                    Component.translatable("config.burgered.renderNoTransform.tooltip.line2").withStyle(ChatFormatting.RED)
-                )
-                .setSaveConsumer { renderNoTransform = it }
                 .build())
 
             builder.setSavingRunnable { CONFIG.save() }

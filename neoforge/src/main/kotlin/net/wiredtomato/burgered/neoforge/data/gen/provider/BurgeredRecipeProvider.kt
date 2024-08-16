@@ -25,7 +25,16 @@ class BurgeredRecipeProvider(
     provider: CompletableFuture<HolderLookup.Provider>
 ) : RecipeProvider(packOutput, provider) {
     override fun buildRecipes(recipeOutput: RecipeOutput, holderLookup: HolderLookup.Provider) {
-        burgerSmithingRecipe(Items.BOOK, BurgeredItems.EDIBLE_BOOK).save(recipeOutput, Burgered.modLoc("edible_book_smithing"))
+        SmithingTransformRecipeBuilder(
+            Ingredient.of(BurgeredItems.BOOK_OF_BURGERS),
+            Ingredient.of(Items.BOOK),
+            Ingredient.of(Items.LEATHER),
+            RecipeCategory.FOOD,
+            BurgeredItems.EDIBLE_BOOK
+        ).unlocks(
+            getHasName(BurgeredItems.BOOK_OF_BURGERS),
+            has(BurgeredItems.BOOK_OF_BURGERS)
+        )
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, BurgeredItems.BOOK_OF_BURGERS)
             .requires(BurgeredItems.BURGER)
@@ -50,8 +59,8 @@ class BurgeredRecipeProvider(
             .pattern(" F ")
             .pattern(" F ")
             .pattern("SSS")
-            .define('F', ItemTags.FENCES)
-            .define('S', ItemTags.SLABS)
+            .define('F', ItemTags.WOODEN_FENCES)
+            .define('S', ItemTags.WOODEN_SLABS)
             .unlockedBy(
                 getHasName(BurgeredItems.BOTTOM_BUN),
                 has(BurgeredItems.BOTTOM_BUN)

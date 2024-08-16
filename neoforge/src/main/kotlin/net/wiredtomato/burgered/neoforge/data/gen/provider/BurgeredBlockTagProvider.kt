@@ -17,5 +17,8 @@ class BurgeredBlockTagProvider(
     override fun addTags(arg: HolderLookup.Provider) {
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
             .add(BurgeredBlocks.GRILL)
+
+        tag(BlockTags.MINEABLE_WITH_AXE)
+            .add(BurgeredBlocks.BURGER_STACKER)
     }
 }
