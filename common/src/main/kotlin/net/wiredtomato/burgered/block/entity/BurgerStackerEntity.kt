@@ -3,6 +3,7 @@ package net.wiredtomato.burgered.block.entity
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtOps
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
@@ -70,17 +71,24 @@ class BurgerStackerEntity(
     fun renderStack() = burger.copy()
 
     override fun saveAdditional(nbt: CompoundTag, lookupProvider: HolderLookup.Provider) {
-        if (!burger.isEmpty) {
-            val stackNbt = burger.save(lookupProvider)
-            nbt.put("burger", stackNbt)
+        val ops = NbtOps.INSTANCE
+        val stackTagResult = ItemStack.OPTIONAL_CODEC.encode(burger, ops, CompoundTag())
+        stackTagResult.ifError { error ->
+            throw IllegalStateException("Failed to encode burger stacker data: ${error.message()}")
+        }.ifSuccess { stackTag ->
+            nbt.put("burger", stackTag)
         }
     }
 
     override fun loadAdditional(nbt: CompoundTag, lookupProvider: HolderLookup.Provider) {
-        val stackNbt = nbt.getCompound("burger")
-        burger = if (!stackNbt.isEmpty) {
-            ItemStack.parseOptional(lookupProvider, stackNbt)
-        } else ItemStack.EMPTY
+        val stackTag = nbt.get("burger")
+        val ops = NbtOps.INSTANCE
+        val stackResult = ItemStack.OPTIONAL_CODEC.decode(ops, stackTag)
+        stackResult.ifError { error ->
+            throw IllegalStateException("Failed to decode burger stacker data: ${error.message()}")
+        }.ifSuccess { stack ->
+            burger = stack.first
+        }
     }
 
     override fun getUpdateTag(lookupProvider: HolderLookup.Provider): CompoundTag {

@@ -123,7 +123,7 @@ class BurgeredRecipeProvider(
             Ingredient.of(BurgeredItems.RAW_BEEF_PATTY),
             ItemStack.EMPTY,
             BurgeredItems.BEEF_PATTY.defaultInstance,
-            25f,
+            7f,
             100,
             getHasName(BurgeredItems.RAW_BEEF_PATTY),
             has(BurgeredItems.RAW_BEEF_PATTY)
@@ -135,7 +135,7 @@ class BurgeredRecipeProvider(
             Ingredient.of(Items.MILK_BUCKET),
             Items.BUCKET.defaultInstance,
             ItemStack(BurgeredItems.CHEESE_SLICE, 4),
-            25f,
+            7f,
             100,
             getHasName(Items.MILK_BUCKET),
             has(Items.MILK_BUCKET)

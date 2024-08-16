@@ -9,7 +9,6 @@ import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
 import net.minecraft.server.level.ServerLevel
-import net.minecraft.world.ContainerHelper
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.player.Player
@@ -26,6 +25,8 @@ import net.minecraft.world.phys.BlockHitResult
 import net.wiredtomato.burgered.init.BurgeredBlockEntities
 import net.wiredtomato.burgered.init.BurgeredRecipes
 import net.wiredtomato.burgered.recipe.GrillingRecipe
+import net.wiredtomato.burgered.util.load
+import net.wiredtomato.burgered.util.save
 import kotlin.math.roundToInt
 
 class GrillEntity(
@@ -67,6 +68,7 @@ class GrillEntity(
         if (!inventory[slot].isEmpty) {
             Block.popResource(world, blockPos, inventory[slot])
             inventory[slot] = ItemStack.EMPTY
+            setChanged()
             return InteractionResult.SUCCESS
         }
 
@@ -90,12 +92,12 @@ class GrillEntity(
 
     override fun saveAdditional(nbt: CompoundTag, lookupProvider: HolderLookup.Provider) {
         nbt.putIntArray("cookTimes", cookTimes)
-        ContainerHelper.saveAllItems(nbt, inventory, lookupProvider)
+        inventory.save(nbt)
     }
 
     override fun loadAdditional(nbt: CompoundTag, lookupProvider: HolderLookup.Provider) {
         cookTimes = nbt.getIntArray("cookTimes").toMutableList()
-        ContainerHelper.loadAllItems(nbt, inventory, lookupProvider)
+        inventory.load(nbt)
     }
 
     override fun getUpdateTag(lookupProvider: HolderLookup.Provider): CompoundTag {
@@ -122,16 +124,16 @@ class GrillEntity(
                 val recipe = recipeHolder.value
                 if (cookTime >= recipe.cookingTime) {
                     val result = recipe.assemble(recipeInput, world.registryAccess())
-                    val transform = recipe.transform
+                    val transform = recipe.transform.copy()
                     inventory[i] = result
                     cookTimes[i] = 0
 
                     if (!transform.isEmpty) {
-                        Block.popResource(world, blockPos, transform)
+                        Block.popResource(world, blockPos.above(), transform)
                     }
 
                     if (world is ServerLevel) {
-                        val pos = blockPos.center
+                        val pos = blockPos.above().center
                         ExperienceOrb.award(world, pos, recipe.experience.roundToInt())
                     }
                 }
