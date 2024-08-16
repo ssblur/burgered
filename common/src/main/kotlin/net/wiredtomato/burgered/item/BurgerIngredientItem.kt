@@ -35,7 +35,7 @@ open class BurgerIngredientItem(properties: BurgerIngredientProperties) : Item(p
     ) {
         val quality = itemStack.get(BurgeredDataComponents.QUALITY)?.quality ?: IngredientQuality.NORMAL
 
-        list.add(Component.literal("Quality: ${quality.name}"))
+        list.add(Component.literal("Quality: ").append(Component.translatable(quality.translationKey)))
     }
 
     override fun canBePutOn(ingredientStack: ItemStack, burger: Burger, burgerStack: ItemStack): Boolean {

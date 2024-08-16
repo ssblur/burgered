@@ -23,6 +23,12 @@ class BurgeredEnUsLangProvider(output: PackOutput) : LanguageProvider(output, Bu
         add(CommonText.BURGER_MAX_SIZE, "Sorry, I can't let you put anymore ingredient on this burger.")
         add(CommonText.SLOPPINESS, "Sloppiness: %s")
 
+        add("${Burgered.MOD_ID}.ingredient_quality.very_poor", "Very Poor")
+        add("${Burgered.MOD_ID}.ingredient_quality.poor", "Poor")
+        add("${Burgered.MOD_ID}.ingredient_quality.normal", "Normal")
+        add("${Burgered.MOD_ID}.ingredient_quality.good", "Good")
+        add("${Burgered.MOD_ID}.ingredient_quality.excellent", "Excellent")
+
         add("emi.category.burgered.grilling", "Grilling")
 
         add("config.burgered.client.title", "Burgered Client Config")
