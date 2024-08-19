@@ -22,6 +22,7 @@ object Burgered {
         BurgeredItems.ITEMS.register()
         BurgeredRecipes.RECIPES.register()
         BurgeredRecipes.Serializers.RECIPE_SERIALIZERS.register()
+        BurgeredTabs.TABS.register()
 
         LivingEntityEvents.ON_EAT.register onEat@ { entity, world, stack, component ->
             val burger = stack.get(BurgeredDataComponents.BURGER) ?: run {
