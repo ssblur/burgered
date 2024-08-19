@@ -89,7 +89,7 @@ object BurgerItemRenderer : DynamicItemRenderer {
                 is WithModelHeight -> {
                     matrices.translate(
                         0.0,
-                        (renderSettings.modelHeight / 16.0) * renderSettings.renderScale.y,
+                        if (renderSettings.modelHeight == 0.0) 0.001 else (renderSettings.modelHeight / 16.0) * renderSettings.renderScale.y,
                         0.0
                     )
                 }

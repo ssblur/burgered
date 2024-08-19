@@ -23,6 +23,7 @@ object BurgerStackablesLoader : ResourceManagerReloadListener {
 
                 stackable.ifSuccess { pair ->
                     BurgerStackables.add(pair.first)
+                    Burgered.LOGGER.info("Loaded stackable: $id")
                 }
             }
         }

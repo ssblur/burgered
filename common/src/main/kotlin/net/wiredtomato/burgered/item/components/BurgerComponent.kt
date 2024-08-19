@@ -100,7 +100,7 @@ data class BurgerComponent(
         }
 
         fun fromItem(ingredient: Item): BurgerIngredient {
-            return ingredient.ingredient() ?: throw IllegalStateException("Non ingredient item found: $ingredient")
+            return ingredient.ingredient() ?: BurgeredItems.BOTTOM_BUN
         }
 
         override fun appendIngredient(burger: BurgerComponent, stack: ItemStack, ingredientStack: ItemStack, ingredient: BurgerIngredient): Component? {

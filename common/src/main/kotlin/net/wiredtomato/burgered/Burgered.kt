@@ -1,12 +1,17 @@
 package net.wiredtomato.burgered
 
+import dev.architectury.event.events.common.LifecycleEvent
+import dev.architectury.event.events.common.PlayerEvent
+import dev.architectury.networking.NetworkManager
 import dev.architectury.registry.ReloadListenerRegistry
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
+import net.wiredtomato.burgered.api.data.burger.BurgerStackables
 import net.wiredtomato.burgered.api.data.burger.BurgerStackablesLoader
 import net.wiredtomato.burgered.api.event.LivingEntityEvents
 import net.wiredtomato.burgered.api.ingredient.BurgerIngredient
 import net.wiredtomato.burgered.init.*
+import net.wiredtomato.burgered.networking.StackableSyncPacket
 import org.slf4j.LoggerFactory
 
 object Burgered {
@@ -23,6 +28,17 @@ object Burgered {
         BurgeredRecipes.RECIPES.register()
         BurgeredRecipes.Serializers.RECIPE_SERIALIZERS.register()
         BurgeredTabs.TABS.register()
+
+        LifecycleEvent.SERVER_BEFORE_START.register {
+            if (it.isDedicatedServer) {
+                NetworkManager.registerS2CPayloadType(StackableSyncPacket.TYPE, StackableSyncPacket.PACKET_CODEC)
+            }
+        }
+
+        PlayerEvent.PLAYER_JOIN.register { player ->
+            val payload = StackableSyncPacket(BurgerStackables.toList())
+            NetworkManager.sendToPlayer(player, payload)
+        }
 
         LivingEntityEvents.ON_EAT.register onEat@ { entity, world, stack, component ->
             val burger = stack.get(BurgeredDataComponents.BURGER) ?: run {

@@ -15,7 +15,7 @@ fun Item.ingredient(): BurgerIngredient? {
     if (this is BurgerIngredient) return this
 
     if (BurgerStackables.map { it.item }.contains(this)) {
-        val stackable = BurgerStackables.find { it.item == this }!!
+        val stackable = BurgerStackables.find { it.item == this } ?: return null
         return object : BurgerIngredient {
             override fun canBePutOn(ingredientStack: ItemStack, burger: Burger, burgerStack: ItemStack): Boolean = true
             override fun saturation(instance: BurgerIngredientInstance): Int = stackable.hunger
@@ -24,6 +24,15 @@ fun Item.ingredient(): BurgerIngredient? {
             override fun renderSettings(instance: BurgerIngredientInstance): IngredientRenderSettings = IngredientRenderSettings.ItemModel2d(Vector3d(0.5), Vector3d())
             override fun asItem(): Item = this@ingredient
             override fun onEat(entity: LivingEntity, world: Level, stack: ItemStack, component: FoodProperties) { }
+
+            override fun equals(other: Any?): Boolean {
+                if (other == null) return false
+                if (other !is BurgerIngredient) return false
+                if (this === other) return true
+                if (this.asItem() == other.asItem()) return true
+
+                return false
+            }
         }
     }
 
