@@ -19,7 +19,9 @@ class BurgeredItemModelProvider(
         val DYNAMICLY_RENDERED = ModelFile.UncheckedModelFile(ResourceLocation.withDefaultNamespace("builtin/entity"))
         val TOP_BUN_MODEL = ModelFile.UncheckedModelFile(Burgered.modLoc("item/top_bun"))
 
-        parented(BurgeredItems.BURGER, DYNAMICLY_RENDERED).guiLight(GuiLight.FRONT)
+        parented(BurgeredItems.BURGER, DYNAMICLY_RENDERED)
+            .texture("particle", Burgered.modLoc("item/bun"))
+            .guiLight(GuiLight.FRONT)
 
         basicItem(BurgeredItems.BOOK_OF_BURGERS)
         basicItem(BurgeredItems.ESTROGEN_WAFFLE)
