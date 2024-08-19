@@ -1,5 +1,5 @@
 {
-	"credit": "Made with Blockbench",
+	"parent": "burgered:item/ingredient_template",
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "burgered:item/edible_book",
@@ -62,35 +62,5 @@
 				"down": {"uv": [4, 0, 2, 2.75], "texture": "#0"}
 			}
 		}
-	],
-	"display": {
-		"thirdperson_righthand": {
-			"translation": [0, 1, 0],
-			"scale": [0.45, 0.45, 0.45]
-		},
-		"thirdperson_lefthand": {
-			"translation": [0, 1, 0],
-			"scale": [0.45, 0.45, 0.45]
-		},
-		"firstperson_righthand": {
-			"translation": [0, 6, 0]
-		},
-		"firstperson_lefthand": {
-			"translation": [0, 6, 0]
-		},
-		"ground": {
-			"translation": [0, 6, 0]
-		},
-		"gui": {
-			"rotation": [90, -50, 45],
-			"translation": [-2.5, 3.25, 0]
-		},
-		"head": {
-			"translation": [0, 14.5, 0.5]
-		},
-		"fixed": {
-			"rotation": [90, 180, 0],
-			"translation": [0, 0, 4.75]
-		}
-	}
+	]
 }
