@@ -28,6 +28,7 @@ object Burgered {
         BurgeredRecipes.RECIPES.register()
         BurgeredRecipes.Serializers.RECIPE_SERIALIZERS.register()
         BurgeredTabs.TABS.register()
+        BurgeredEatEvents.EAT_EVENTS.register()
 
         LifecycleEvent.SERVER_BEFORE_START.register {
             if (it.isDedicatedServer) {
