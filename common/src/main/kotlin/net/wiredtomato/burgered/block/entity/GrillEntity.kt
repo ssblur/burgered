@@ -131,8 +131,7 @@ class GrillEntity(
     }
 
     fun resetSkillCheckTime(slot: Int) {
-        val level = this.level ?: return
-        skillCheckTimes[slot] = level.random.nextIntBetweenInclusive(10, 40)
+        skillCheckTimes[slot] = 40
     }
 
     fun shouldIncreaseQuality(slot: Int): Boolean {
