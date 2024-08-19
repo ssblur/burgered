@@ -34,7 +34,7 @@ class BurgeredRecipeProvider(
         ).unlocks(
             getHasName(BurgeredItems.BOOK_OF_BURGERS),
             has(BurgeredItems.BOOK_OF_BURGERS)
-        )
+        ).save(recipeOutput, Burgered.modLoc("edible_book"))
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, BurgeredItems.BOOK_OF_BURGERS)
             .requires(BurgeredItems.BURGER)
