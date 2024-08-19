@@ -29,6 +29,8 @@ class BurgeredEnUsLangProvider(output: PackOutput) : LanguageProvider(output, Bu
         add("${Burgered.MOD_ID}.ingredient_quality.good", "Good")
         add("${Burgered.MOD_ID}.ingredient_quality.excellent", "Excellent")
 
+        add("itemGroup.burgered.burgered_tab", "Burgered")
+
         add("emi.category.burgered.grilling", "Grilling")
 
         add("config.burgered.client.title", "Burgered Client Config")

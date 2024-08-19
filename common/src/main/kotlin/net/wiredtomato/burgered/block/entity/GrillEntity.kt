@@ -14,10 +14,12 @@ import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.ExperienceOrb
+import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeHolder
 import net.minecraft.world.item.crafting.SingleRecipeInput
+import net.minecraft.world.level.GameRules
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.HorizontalDirectionalBlock
@@ -63,6 +65,7 @@ class GrillEntity(
                     slotInteraction(world, player, stack, 0)
                 } else slotInteraction(world, player, stack, 1)
             }
+
             Direction.EAST, Direction.WEST -> {
                 if (hitPos.z < center.z) {
                     slotInteraction(world, player, stack, 0)
@@ -78,6 +81,14 @@ class GrillEntity(
         if (isDuringSkillCheck(slot)) {
             if (shouldIncreaseQuality(slot)) {
                 qualities[slot] = qualities[slot].nextUp()
+                world.playSound(
+                    null,
+                    blockPos,
+                    SoundEvents.EXPERIENCE_ORB_PICKUP,
+                    SoundSource.BLOCKS,
+                    0.2f,
+                    3f
+                )
             }
 
             resetSkillCheckTime(slot)
@@ -85,7 +96,7 @@ class GrillEntity(
         }
 
         if (!inventory[slot].isEmpty) {
-            Block.popResource(world, blockPos, inventory[slot])
+            world.spawnItems(slot, inventory[slot])
             inventory[slot] = ItemStack.EMPTY
             cookTimes[slot] = 0
             skillCheckTimes[slot] = SKILL_CHECK_NAN
@@ -107,19 +118,12 @@ class GrillEntity(
         return InteractionResult.SUCCESS
     }
 
-    fun getParticlePos(slot: Int): Vec3 {
-        val center = blockPos.center
-        var pos = center.add(0.0, 0.6, 0.0)
+    fun getItemPos(slot: Int): Vec3 {
+        var pos = blockPos.center.add(0.0, 0.4, 0.0)
         val direction = blockState.getValue(HorizontalDirectionalBlock.FACING)
         when (direction) {
-            Direction.NORTH, Direction.SOUTH -> {
-                pos = pos.add(-0.25 * ((slot * 2) - 1), 0.0, 0.0)
-            }
-
-            Direction.EAST, Direction.WEST -> {
-                pos = pos.add(0.0, 0.0, 0.25 * ((slot * 2) - 1))
-            }
-
+            Direction.NORTH, Direction.SOUTH -> pos = pos.add(-0.25 * ((slot * 2) - 1), 0.0, 0.0)
+            Direction.EAST, Direction.WEST -> pos = pos.add(0.0, 0.0, 0.25 * ((slot * 2) - 1))
             else -> {}
         }
 
@@ -188,8 +192,7 @@ class GrillEntity(
                 skillCheckTimes[i]--
                 val skillCheckTime = skillCheckTimes[i]
                 if (isDuringSkillCheck(i) && world is ServerLevel) {
-                    val particlePos = getParticlePos(i)
-
+                    val particlePos = getItemPos(i).add(0.0, 0.2, 0.0)
                     world.sendParticles(
                         ParticleTypes.FLAME,
                         particlePos.x,
@@ -226,13 +229,12 @@ class GrillEntity(
                     inventory[i] = result
                     cookTimes[i] = 0
 
-                    if (!transform.isEmpty) {
-                        Block.popResource(world, blockPos.above(), transform)
+                    if (!transform.isEmpty && world.gameRules.getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
+                        world.spawnItems(i, transform)
                     }
 
                     if (world is ServerLevel) {
-                        val pos = blockPos.above().center
-                        ExperienceOrb.award(world, pos, recipe.experience.roundToInt())
+                        ExperienceOrb.award(world, getItemPos(i), recipe.experience.roundToInt())
                     }
                 }
             }
@@ -241,5 +243,14 @@ class GrillEntity(
         fun getRecipe(world: Level, input: SingleRecipeInput): RecipeHolder<GrillingRecipe>? {
             return world.recipeManager.getAllRecipesFor(BurgeredRecipes.GRILLING).find { it.value.matches(input, world) }
         }
+
+    }
+
+    fun Level.spawnItems(slot: Int, stack: ItemStack) {
+        val pos = getItemPos(slot)
+        val itemEntity = ItemEntity(this, pos.x, pos.y, pos.z, stack)
+        itemEntity.setDeltaMovement(0.0, 0.15, 0.0)
+        itemEntity.setDefaultPickUpDelay()
+        this.addFreshEntity(itemEntity)
     }
 }
